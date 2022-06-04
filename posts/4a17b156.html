@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<meta name="author" content="Cai Wu" />
+    
+<title>GitHub Actions | Blog</title>
+
+ 
+<link rel="icon" href="/favicon.ico" />
+  
+<!-- stylesheets list from _config.yml -->
+
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.1/viewer.min.css" />
+   
+<!-- scripts list from _config.yml -->
+
+<script src="/js/jquery.js"></script>
+
+<script src="/js/script.js"></script>
+
+<script src="/js/tocbot.min.js"></script>
+
+<script src="/js/search.js"></script>
+
+<script src="/js/vanline.js"></script>
+
+<script src="/js/viewer.js"></script>
+   
+    
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-header header-logo">
+        <a href="/">caiwu&#39;s Blog</a>
+        <input type="text" id="local-search-input" placeholder="🔍" />
+      </div>
+      <div id="local-search-result"></div>
+      <div class="menu navbar-right">
+        
+        <a class="menu-item" href="/archives">Posts</a>
+        
+        <a class="menu-item" href="/categories">Categories</a>
+        
+        <a class="menu-item" href="/tags">Tags</a>
+        
+        <a class="menu-item" href="/about">About</a>
+        
+        <input id="switch_default" type="checkbox" class="switch_default" />
+        <label for="switch_default" class="toggleBtn"></label>
+      </div>
+    </div>
+  </nav>
+
+  
+  <nav class="navbar-mobile" id="nav-mobile">
+    <div class="container">
+      <div class="navbar-header">
+        <div>
+          <a href="/">caiwu&#39;s Blog</a
+          ><a id="mobile-toggle-theme">·&nbsp;Light</a>
+        </div>
+        <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+      </div>
+      <div class="menu" id="mobile-menu">
+        
+        <a class="menu-item" href="/archives">Posts</a>
+        
+        <a class="menu-item" href="/categories">Categories</a>
+        
+        <a class="menu-item" href="/tags">Tags</a>
+        
+        <a class="menu-item" href="/about">About</a>
+        
+      </div>
+    </div>
+  </nav>
+</header>
+<script>
+  var mobileBtn = function f() {
+    var toggleMenu = document.getElementsByClassName('menu-toggle')[0]
+    var mobileMenu = document.getElementById('mobile-menu')
+    if (toggleMenu.classList.contains('active')) {
+      toggleMenu.classList.remove('active')
+      mobileMenu.classList.remove('active')
+    } else {
+      toggleMenu.classList.add('active')
+      mobileMenu.classList.add('active')
+    }
+  }
+</script>
+
+        <div class="main">
+            <div class="container">
+    <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>  
+  <article class="post-wrap" id="artcle-container">
+    <header class="post-header">
+      <h1 class="post-title">
+        GitHub Actions
+        <!-- id 将作为查询条件 -->
+        <span
+          style="float: right; font-size: 12px; opacity: 0.6"
+          id="/posts/4a17b156.html"
+          class="leancloud_visitors"
+          data-flag-title="GitHub Actions"
+        >
+          <em class="post-meta-item-text">阅读量 </em>
+          <i class="leancloud-visitors-count"></i>
+        </span>
+      </h1>
+      
+      <div class="post-meta">
+         Author:
+        <a itemprop="author" rel="author" href="/"> Cai Wu </a>
+        
+        <!--  -->
+        
+        <span class="post-time">
+          &nbsp Date:
+          <a href="#">
+            六月 4, 2022&nbsp;&nbsp;4:44:31
+          </a>
+        </span>
+        
+        <!--  -->
+        <!--  -->
+        
+        <span class="post-time">
+          &nbsp Update:
+          <a href="#">
+            六月 4, 2022&nbsp;&nbsp;4:44:31
+          </a>
+        </span>
+        
+        <!--  -->
+        
+        <span class="post-category">
+          &nbsp Category: 
+          <a href="/categories/%E5%85%B6%E4%BB%96/"> 其他 </a>
+          
+        </span>
+        
+      </div>
+      
+    </header>
+
+    <div class="post-content"><p>GitHub Actions是github推出的<strong>持续集成服务</strong>，它比 <a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2017/12/travis_ci_tutorial.html">Travis CI</a>更加强大方便；在 GitHub Actions 的仓库中自动化、自定义和执行软件开发工作流程。您可以发现、创建和共享操作以执行您喜欢的任何作业（包括 CI/CD，并将操作合并到完全自定义的工作流程中。本文将通过一个hexo博客自动发布的例子来了解GitHub Actions。</p>
+<h2 id="GitHub-Actions-基础入门"><a href="#GitHub-Actions-基础入门" class="headerlink" title="GitHub Actions 基础入门"></a>GitHub Actions 基础入门</h2><p>众所周知，自动化集成包括很多动作，如代码拉取，环境安装，数据库安装配置，打包，代码测试等等,这些操作就被定义为action。很多操作在不同项目中都是一样的，比如从github拉取代码，node环境安装等等，所以这些操作是可以共享的，这一点GitHub Actions设计者也想到了，所以我们是可以将一些公共的操作单独写发布在github仓库中供别人使用的。github官方也提供了一个<a target="_blank" rel="noopener" href="https://github.com/marketplace?type=actions">action市场</a>，在我们写我们自己的集成流程时，可以通过<strong>userName/repoName</strong>引用他人写好的actions来简化我们的action编写。</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211015153039085.png" alt="image-20211015153039085"></p>
+<h3 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li>workflow（工作流程）：一次集成的过程称为一个工作流程。</li>
+<li>jos（任务）：一个workflow由多个job组成。</li>
+<li>step（步骤）：一个job包含多个步骤。</li>
+<li>action（动作）：每个 step 可以依次执行一个或多个命令（action）。</li>
+</ul>
+<h3 id="配置文件介绍"><a href="#配置文件介绍" class="headerlink" title="配置文件介绍"></a>配置文件介绍</h3><blockquote>
+<p>GitHub Actions 的配置文件叫做 workflow 文件，存放在代码仓库的<code>.github/workflows</code>目录，是一个 <a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2016/07/yaml.html">YAML 格式</a>文件，一个workflow 文件由以上四个部分组成。</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># name：工作流名称，不填 GitHub 将其设置为相对于仓库根目录的工作流程文件路径</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">hexo-ci</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># on：触发流程的事件；必填</span></span><br><span class="line"><span class="comment">## 写法1：使用单一事件</span></span><br><span class="line"><span class="string">on:push</span></span><br><span class="line"><span class="comment">## 写法2：使用事件列表</span></span><br><span class="line"><span class="attr">on:</span> [<span class="string">push</span>, <span class="string">pull_request</span>]</span><br><span class="line"><span class="comment">## 写法3：使用具有活动类型或配置的多个事件</span></span><br><span class="line"><span class="string">on</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [<span class="string">master</span>]</span><br><span class="line">    </span><br><span class="line"><span class="comment"># jobs：任务</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="comment"># job id</span></span><br><span class="line">  <span class="string">job1：</span></span><br><span class="line">  	<span class="string">......</span></span><br><span class="line">  <span class="attr">job2:</span></span><br><span class="line">  	<span class="comment"># job id</span></span><br><span class="line">  	<span class="attr">name:</span> <span class="string">bulid-name</span></span><br><span class="line">  	<span class="comment"># 识别在此作业运行之前必须成功完成的任何作业</span></span><br><span class="line">  	<span class="string">needs:[job1]</span></span><br><span class="line">  	<span class="comment"># 必填。 要运行作业的机器类型</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="comment"># 步骤</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="comment"># 引用他人的actions</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">      <span class="comment"># 步骤名称</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">        <span class="comment"># 有些引用的action需要外部提供的一些参数；通过with传递</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">version:</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">hexo</span></span><br><span class="line">      	 <span class="comment"># step环境变量</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">          <span class="attr">ACTION_DEPLOY_KEY:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.HEXO_DEPLOY_PRI</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="comment"># 执行一些具体的命令（action）</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">~/.ssh/</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">&quot;$ACTION_DEPLOY_KEY&quot;</span> <span class="string">&gt;</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">chmod</span> <span class="number">600</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">ssh-keyscan</span> <span class="string">github.com</span> <span class="string">&gt;&gt;</span> <span class="string">~/.ssh/known_hosts</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">&quot;youremail@.com&quot;</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">&quot;your name&quot;</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">deploy</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">d</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面只是列举了一些常用的字段，GitHub Action 的配置字段非常多，可以通过<a target="_blank" rel="noopener" href="https://docs.github.com/cn/actions/learn-github-actions/workflow-syntax-for-github-actions">官方中文文档</a>查阅</p>
+</blockquote>
+<h2 id="下面是一个自动部署hexo的例子"><a href="#下面是一个自动部署hexo的例子" class="headerlink" title="下面是一个自动部署hexo的例子"></a>下面是一个自动部署hexo的例子</h2><h3 id="案例基本需求"><a href="#案例基本需求" class="headerlink" title="案例基本需求"></a>案例基本需求</h3><blockquote>
+<p>有两个仓库git仓库A、B，A存放的是hexo博客的资源文件，即markdown文件，B仓库则是 github page 仓库，存放的是hexo编译之后的文件；通常情况下我们每次写完博客需要进行编译，然后把编译好的文件push到B仓库，同时把资源文件push到A仓库。这样显得比较繁琐，现在我们利用GitHub Actions实现在每次push资源文件到A仓库时，github自动编译资源文件，并且将编译好的文件发布到B仓库。</p>
+</blockquote>
+<h3 id="创建两个仓库"><a href="#创建两个仓库" class="headerlink" title="创建两个仓库"></a>创建两个仓库</h3><ul>
+<li>blog：存放资源文件</li>
+<li>caiwuu.github.io：github page 静态文件仓库</li>
+</ul>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211009000947355.png" alt="image-20211009000947355"></p>
+<h3 id="生成公钥私钥"><a href="#生成公钥私钥" class="headerlink" title="生成公钥私钥"></a>生成公钥私钥</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">ssh-keygen -t rsa -b 4096 -C <span class="string">&quot;<span class="subst">$(git config user.email)</span>&quot;</span> -f github-deploy-key -N <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>此时在当前目录下会生成两个文件github-deploy-key(私钥)和github-deploy-key.pub(公钥)</p>
+<h3 id="给caiwuu-github-io仓库添加公钥"><a href="#给caiwuu-github-io仓库添加公钥" class="headerlink" title="给caiwuu.github.io仓库添加公钥"></a>给caiwuu.github.io仓库添加公钥</h3><p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090050853.png" alt="image-20211009005049817"></p>
+<h3 id="给blog仓库添加secrets’变量HEXO-DEPLOY-PUB"><a href="#给blog仓库添加secrets’变量HEXO-DEPLOY-PUB" class="headerlink" title="给blog仓库添加secrets’变量HEXO_DEPLOY_PUB"></a>给blog仓库添加secrets’变量HEXO_DEPLOY_PUB</h3><blockquote>
+<p>这个变量存的就是私钥，这个变量在Github Action 中可以通过变量名获取</p>
+</blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090054166.png" alt="image-20211009005450131"></p>
+<h3 id="创建action脚本文件"><a href="#创建action脚本文件" class="headerlink" title="创建action脚本文件"></a>创建action脚本文件</h3><blockquote>
+<p>GitHub Actions 的配置文件叫做 workflow 文件，存放在代码仓库的<code>.github/workflows</code>目录，是一个以yml为后缀的文件</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">CI</span></span><br><span class="line"><span class="string">on</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [<span class="string">master</span>]</span><br><span class="line">  <span class="attr">workflow_dispatch:</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">version:</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">hexo</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">          <span class="attr">ACTION_DEPLOY_KEY:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.HEXO_DEPLOY_PRI</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">~/.ssh/</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">&quot;$ACTION_DEPLOY_KEY&quot;</span> <span class="string">&gt;</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">chmod</span> <span class="number">600</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">ssh-keyscan</span> <span class="string">github.com</span> <span class="string">&gt;&gt;</span> <span class="string">~/.ssh/known_hosts</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">&quot;youremail@.com&quot;</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">&quot;your name&quot;</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">deploy</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">d</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Hexo-deploy-配置"><a href="#Hexo-deploy-配置" class="headerlink" title="Hexo  deploy 配置"></a>Hexo  deploy 配置</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repository:</span> <span class="string">git@github.com:caiwuu/caiwuu.github.io.git</span> <span class="comment"># 这里一定要用ssh地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>尝试修改一点博客的内容，然后提交，查看CI集成是否成功</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090107800.png" alt="image-20211009010711752"></p>
+<blockquote>
+<p>action执行成功后可以看到编译的静态文件已经成功部署到了github page仓库，代开github page地址博客已经更新</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090109673.png" alt="image-20211009010941631"></p>
+</blockquote>
+</div>
+
+    
+    <section class="post-copyright">
+      
+      <p class="copyright-item">
+        <span>Author:</span>
+        <span> Cai Wu </span>
+      </p>
+       
+      <p class="copyright-item" style="text-overflow: ellipsis; overflow: hidden">
+        <span>Permalink:</span>
+        <span><a href="https://caiwuu.github.io/posts/4a17b156.html"> https://caiwuu.github.io/posts/4a17b156.html </a></span>
+      </p>
+        
+    </section>
+    
+    <section class="post-tags">
+      <div>
+        <span>Tag(s):</span>
+        <span class="tag">
+           
+          <a href="/tags/github-action/"># github action</a>
+          
+          <a href="/tags/CI/"># CI</a>
+           
+        </span>
+      </div>
+      <div>
+        <a href="javascript:window.history.back();">back</a>
+        <span>· </span>
+        <a href="/">home</a>
+      </div>
+    </section>
+    <section class="post-nav" style="height: 72px">
+      
+      <a class="prev" rel="next" href="/posts/c753095b.html"> 新一代富文本编辑器设计（三） </a>
+       
+    </section>
+    <div id="vcomments"></div>
+    <!-- id 将作为查询条件 -->
+    <script>
+      const viewer = new Viewer(document.getElementById('artcle-container'), {
+        inline: false,
+        // viewed() {
+        //   // viewer.zoomTo(0.8)
+        // },
+      })
+      new Valine({
+        el: '#vcomments',
+        appId: 'WMcVmY3mpwsbkLkKENagoOts-gzGzoHsz',
+        appKey: 'eE10SdKfvwoU6o1FKHRS3JuF',
+        meta: ['nick'],
+        avatar: 'robohash',
+        visitor: true, // 阅读量统计
+        recordIP: true,
+      })
+    </script>
+  </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+  <div class="copyright">
+    <span>© Cai Wu | 2020</span>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>

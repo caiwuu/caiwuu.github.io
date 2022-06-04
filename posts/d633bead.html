@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<meta name="author" content="Cai Wu" />
+    
+<title>Typora图床配置 | Blog</title>
+
+ 
+<link rel="icon" href="/favicon.ico" />
+  
+<!-- stylesheets list from _config.yml -->
+
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.1/viewer.min.css" />
+   
+<!-- scripts list from _config.yml -->
+
+<script src="/js/jquery.js"></script>
+
+<script src="/js/script.js"></script>
+
+<script src="/js/tocbot.min.js"></script>
+
+<script src="/js/search.js"></script>
+
+<script src="/js/vanline.js"></script>
+
+<script src="/js/viewer.js"></script>
+   
+    
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-header header-logo">
+        <a href="/">caiwu&#39;s Blog</a>
+        <input type="text" id="local-search-input" placeholder="🔍" />
+      </div>
+      <div id="local-search-result"></div>
+      <div class="menu navbar-right">
+        
+        <a class="menu-item" href="/archives">Posts</a>
+        
+        <a class="menu-item" href="/categories">Categories</a>
+        
+        <a class="menu-item" href="/tags">Tags</a>
+        
+        <a class="menu-item" href="/about">About</a>
+        
+        <input id="switch_default" type="checkbox" class="switch_default" />
+        <label for="switch_default" class="toggleBtn"></label>
+      </div>
+    </div>
+  </nav>
+
+  
+  <nav class="navbar-mobile" id="nav-mobile">
+    <div class="container">
+      <div class="navbar-header">
+        <div>
+          <a href="/">caiwu&#39;s Blog</a
+          ><a id="mobile-toggle-theme">·&nbsp;Light</a>
+        </div>
+        <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+      </div>
+      <div class="menu" id="mobile-menu">
+        
+        <a class="menu-item" href="/archives">Posts</a>
+        
+        <a class="menu-item" href="/categories">Categories</a>
+        
+        <a class="menu-item" href="/tags">Tags</a>
+        
+        <a class="menu-item" href="/about">About</a>
+        
+      </div>
+    </div>
+  </nav>
+</header>
+<script>
+  var mobileBtn = function f() {
+    var toggleMenu = document.getElementsByClassName('menu-toggle')[0]
+    var mobileMenu = document.getElementById('mobile-menu')
+    if (toggleMenu.classList.contains('active')) {
+      toggleMenu.classList.remove('active')
+      mobileMenu.classList.remove('active')
+    } else {
+      toggleMenu.classList.add('active')
+      mobileMenu.classList.add('active')
+    }
+  }
+</script>
+
+        <div class="main">
+            <div class="container">
+    <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>  
+  <article class="post-wrap" id="artcle-container">
+    <header class="post-header">
+      <h1 class="post-title">
+        Typora图床配置
+        <!-- id 将作为查询条件 -->
+        <span
+          style="float: right; font-size: 12px; opacity: 0.6"
+          id="/posts/d633bead.html"
+          class="leancloud_visitors"
+          data-flag-title="Typora图床配置"
+        >
+          <em class="post-meta-item-text">阅读量 </em>
+          <i class="leancloud-visitors-count"></i>
+        </span>
+      </h1>
+      
+      <div class="post-meta">
+         Author:
+        <a itemprop="author" rel="author" href="/"> Cai Wu </a>
+        
+        <!--  -->
+        
+        <span class="post-time">
+          &nbsp Date:
+          <a href="#">
+            十月 6, 2021&nbsp;&nbsp;23:20:17
+          </a>
+        </span>
+        
+        <!--  -->
+        <!--  -->
+        
+        <span class="post-time">
+          &nbsp Update:
+          <a href="#">
+            六月 4, 2022&nbsp;&nbsp;4:44:31
+          </a>
+        </span>
+        
+        <!--  -->
+        
+        <span class="post-category">
+          &nbsp Category: 
+          <a href="/categories/%E9%85%8D%E7%BD%AE/"> 配置 </a>
+          
+        </span>
+        
+      </div>
+      
+    </header>
+
+    <div class="post-content"><h2 id="在typora偏好设置中配置图片上传服务"><a href="#在typora偏好设置中配置图片上传服务" class="headerlink" title="在typora偏好设置中配置图片上传服务"></a>在typora偏好设置中配置图片上传服务</h2><p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007020425624.png" alt="image-20211007020425624"></p>
+<blockquote>
+<p> 如果没下载Picgo则点击下载，选择合适的安装包安装即可</p>
+</blockquote>
+<h2 id="下载Picgo-点击下载"><a href="#下载Picgo-点击下载" class="headerlink" title="下载Picgo  点击下载"></a>下载Picgo  <a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/picgo/releases">点击下载</a></h2><p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007021016473.png" alt="image-20211007021016473"></p>
+<h2 id="配置Picgo"><a href="#配置Picgo" class="headerlink" title="配置Picgo"></a>配置Picgo</h2><blockquote>
+<p>这里以gitee作为图片仓库</p>
+</blockquote>
+<h3 id="创建gitee仓库"><a href="#创建gitee仓库" class="headerlink" title="创建gitee仓库"></a>创建gitee仓库</h3><blockquote>
+<p>首先在gitee新建一个<strong>公共的</strong>仓库，例如这里新建了一个名叫pic的仓库</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007023301417.png" alt="image-20211007023301417"></p>
+</blockquote>
+<h3 id="获取token"><a href="#获取token" class="headerlink" title="获取token"></a>获取token</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007023908747.png" alt="image-20211007023908747"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007024041393.png" alt="image-20211007024041393"></p>
+</blockquote>
+<h3 id="下载gitee插件"><a href="#下载gitee插件" class="headerlink" title="下载gitee插件"></a>下载gitee插件</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007024254640.png" alt="image-20211007024254640"></p>
+</blockquote>
+<h3 id="配置gitee插件"><a href="#配置gitee插件" class="headerlink" title="配置gitee插件"></a>配置gitee插件</h3><blockquote>
+<p>在图床设置中设置Gitee图床</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025134178.png" alt="image-20211007025134178"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007024537599.png"></p>
+</blockquote>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><blockquote>
+<p>配置好了即可在上传区上传一张图片看是否成功</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025402851.png" alt="image-20211007025402851"></p>
+</blockquote>
+<h3 id="在typora上面测试是否成功"><a href="#在typora上面测试是否成功" class="headerlink" title="在typora上面测试是否成功"></a>在typora上面测试是否成功</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025708740.png" alt="image-20211007025708740"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025950500.png" alt="image-20211007025950500"></p>
+</blockquote>
+<h3 id="如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间"><a href="#如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间" class="headerlink" title="如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间"></a>如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007030518326.png" alt="image-20211007030518326"></p>
+</blockquote>
+</div>
+
+    
+    <section class="post-copyright">
+      
+      <p class="copyright-item">
+        <span>Author:</span>
+        <span> Cai Wu </span>
+      </p>
+       
+      <p class="copyright-item" style="text-overflow: ellipsis; overflow: hidden">
+        <span>Permalink:</span>
+        <span><a href="https://caiwuu.github.io/posts/d633bead.html"> https://caiwuu.github.io/posts/d633bead.html </a></span>
+      </p>
+        
+    </section>
+    
+    <section class="post-tags">
+      <div>
+        <span>Tag(s):</span>
+        <span class="tag">
+           
+          <a href="/tags/%E5%9B%BE%E5%BA%8A%E9%85%8D%E7%BD%AE/"># 图床配置</a>
+          
+          <a href="/tags/typora/"># typora</a>
+           
+        </span>
+      </div>
+      <div>
+        <a href="javascript:window.history.back();">back</a>
+        <span>· </span>
+        <a href="/">home</a>
+      </div>
+    </section>
+    <section class="post-nav" style="height: 72px">
+       
+      <a class="next" rel="prev" href="/posts/f059c6b.html"> RSA加密算法解析 </a>
+      
+    </section>
+    <div id="vcomments"></div>
+    <!-- id 将作为查询条件 -->
+    <script>
+      const viewer = new Viewer(document.getElementById('artcle-container'), {
+        inline: false,
+        // viewed() {
+        //   // viewer.zoomTo(0.8)
+        // },
+      })
+      new Valine({
+        el: '#vcomments',
+        appId: 'WMcVmY3mpwsbkLkKENagoOts-gzGzoHsz',
+        appKey: 'eE10SdKfvwoU6o1FKHRS3JuF',
+        meta: ['nick'],
+        avatar: 'robohash',
+        visitor: true, // 阅读量统计
+        recordIP: true,
+      })
+    </script>
+  </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+  <div class="copyright">
+    <span>© Cai Wu | 2020</span>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>

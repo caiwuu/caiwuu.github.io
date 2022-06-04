@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<meta name="author" content="Cai Wu" />
+    
+<title>新一代富文本编辑器设计（一） | Blog</title>
+
+ 
+<link rel="icon" href="/favicon.ico" />
+  
+<!-- stylesheets list from _config.yml -->
+
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.1/viewer.min.css" />
+   
+<!-- scripts list from _config.yml -->
+
+<script src="/js/jquery.js"></script>
+
+<script src="/js/script.js"></script>
+
+<script src="/js/tocbot.min.js"></script>
+
+<script src="/js/search.js"></script>
+
+<script src="/js/vanline.js"></script>
+
+<script src="/js/viewer.js"></script>
+   
+    
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-header header-logo">
+        <a href="/">caiwu&#39;s Blog</a>
+        <input type="text" id="local-search-input" placeholder="🔍" />
+      </div>
+      <div id="local-search-result"></div>
+      <div class="menu navbar-right">
+        
+        <a class="menu-item" href="/archives">Posts</a>
+        
+        <a class="menu-item" href="/categories">Categories</a>
+        
+        <a class="menu-item" href="/tags">Tags</a>
+        
+        <a class="menu-item" href="/about">About</a>
+        
+        <input id="switch_default" type="checkbox" class="switch_default" />
+        <label for="switch_default" class="toggleBtn"></label>
+      </div>
+    </div>
+  </nav>
+
+  
+  <nav class="navbar-mobile" id="nav-mobile">
+    <div class="container">
+      <div class="navbar-header">
+        <div>
+          <a href="/">caiwu&#39;s Blog</a
+          ><a id="mobile-toggle-theme">·&nbsp;Light</a>
+        </div>
+        <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+      </div>
+      <div class="menu" id="mobile-menu">
+        
+        <a class="menu-item" href="/archives">Posts</a>
+        
+        <a class="menu-item" href="/categories">Categories</a>
+        
+        <a class="menu-item" href="/tags">Tags</a>
+        
+        <a class="menu-item" href="/about">About</a>
+        
+      </div>
+    </div>
+  </nav>
+</header>
+<script>
+  var mobileBtn = function f() {
+    var toggleMenu = document.getElementsByClassName('menu-toggle')[0]
+    var mobileMenu = document.getElementById('mobile-menu')
+    if (toggleMenu.classList.contains('active')) {
+      toggleMenu.classList.remove('active')
+      mobileMenu.classList.remove('active')
+    } else {
+      toggleMenu.classList.add('active')
+      mobileMenu.classList.add('active')
+    }
+  }
+</script>
+
+        <div class="main">
+            <div class="container">
+    <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>  
+  <article class="post-wrap" id="artcle-container">
+    <header class="post-header">
+      <h1 class="post-title">
+        新一代富文本编辑器设计（一）
+        <!-- id 将作为查询条件 -->
+        <span
+          style="float: right; font-size: 12px; opacity: 0.6"
+          id="/posts/45bb21ba.html"
+          class="leancloud_visitors"
+          data-flag-title="新一代富文本编辑器设计（一）"
+        >
+          <em class="post-meta-item-text">阅读量 </em>
+          <i class="leancloud-visitors-count"></i>
+        </span>
+      </h1>
+      
+      <div class="post-meta">
+         Author:
+        <a itemprop="author" rel="author" href="/"> Cai Wu </a>
+        
+        <!--  -->
+        
+        <span class="post-time">
+          &nbsp Date:
+          <a href="#">
+            三月 23, 2022&nbsp;&nbsp;13:29:55
+          </a>
+        </span>
+        
+        <!--  -->
+        <!--  -->
+        
+        <span class="post-time">
+          &nbsp Update:
+          <a href="#">
+            六月 4, 2022&nbsp;&nbsp;4:44:31
+          </a>
+        </span>
+        
+        <!--  -->
+        
+      </div>
+      
+    </header>
+
+    <div class="post-content"><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>富文本编辑器作为前端最具挑战性的项目之一，同时也一直是前端领域的一个深坑；笔者在写这篇文章时已经入坑半年多了，也开发了自己的第一个新一代的富文本编辑器，其中经历了两次小重构，两次大重构（第四次大重构正在进行中）。打开搜索引擎，你会发现关于富文本编辑器真正的实现的文章屈指可数，而其中要么是说些大而笼统的概念，要么就是都是些L0级别的老架构。下面将结合我的开发经验来聊聊关于新一代富文本编辑器的开发。作为开篇，将主要讲解富文本的发展历程和不同架构的优劣。</p>
+<h2 id="发展历程"><a href="#发展历程" class="headerlink" title="发展历程"></a>发展历程</h2><p>富文本发展至今已经经历了<strong>L0</strong>,<strong>L1</strong>,<strong>L2</strong>三个阶段，每上升一个阶段，开发难度都会增加，对浏览器的依赖都在减少，灵活性体验性和一致性都在增强。下面将大致介绍各个阶段的特点（具体的可以百度，这部分内容网上很多，而我将着重介绍L2级别的设计）</p>
+<h3 id="L0-阶段"><a href="#L0-阶段" class="headerlink" title="L0 阶段"></a>L0 阶段</h3><p>该节点主要用到了 <code>contenteditable</code> 和 <code>document.execCommand</code>这两个API,代表的有 Wangeditor ，Ckeditor等·</p>
+<p><strong>优点</strong> 这个级别的优点就是开发简单，难点浏览器都帮你实现了。</p>
+<p><strong>缺点</strong> 当然缺点也是显而易见，高度依赖浏览器，灵活性低，可定制性低，不同浏览器API行为不一致，脏标签问题，<code>document.execCommand</code>即将被废弃；几乎不支持协同</p>
+<h3 id="L1-阶段"><a href="#L1-阶段" class="headerlink" title="L1 阶段"></a>L1 阶段</h3><p>该阶段相对于L0在于它不再依赖 <code>document.execCommand</code>这个API，实现了数据和视图的分离，自己实现了一套操作命令，自由度更高了。如 quill，slate等</p>
+<p><strong>优点</strong> 相对于L0减少了很多浏览器导致的不确定的bug，可支持协同</p>
+<p><strong>缺点</strong> 开发难度相对于L0大大增加，输入上面可能存在一些bug，<code>contenteditable</code>的坑依然存在，<a target="_blank" rel="noopener" href="https://www.oschina.net/translate/why-contenteditable-is-terrible?lang=chs&p=1">具体有哪些坑可参考这篇文章</a></p>
+<h3 id="L2-阶段"><a href="#L2-阶段" class="headerlink" title="L2 阶段"></a>L2 阶段</h3><p>该阶段在L1的基础上彻底抛弃了<code>contenteditable</code>,自己实现光标，输入，选区，甚至自己实现一套绘制系统（这种我称之为L2 pro），如WPS网页版本、GoogeDocs</p>
+<p><strong>优点</strong> 该阶段将不再有<code>contenteditable</code>的坑，同时可玩性和定制性大大增强，可以随心所欲的实现各种功能。</p>
+<p><strong>缺点</strong> 开发难度大大增强，特别是光标、输入、选区的处理非常复杂。</p>
+<h4 id="接下来的几章笔者将介绍关于L2级别编辑器的光标，输入，模型等各个模块的设计和难点，最后再整合以上模块来介绍总体的架构。敬请期待"><a href="#接下来的几章笔者将介绍关于L2级别编辑器的光标，输入，模型等各个模块的设计和难点，最后再整合以上模块来介绍总体的架构。敬请期待" class="headerlink" title="接下来的几章笔者将介绍关于L2级别编辑器的光标，输入，模型等各个模块的设计和难点，最后再整合以上模块来介绍总体的架构。敬请期待!"></a>接下来的几章笔者将介绍关于L2级别编辑器的<code>光标</code>，<code>输入</code>，<code>模型</code>等各个模块的设计和难点，最后再整合以上模块来介绍<code>总体的架构</code>。敬请期待!</h4></div>
+
+    
+    <section class="post-copyright">
+      
+      <p class="copyright-item">
+        <span>Author:</span>
+        <span> Cai Wu </span>
+      </p>
+       
+      <p class="copyright-item" style="text-overflow: ellipsis; overflow: hidden">
+        <span>Permalink:</span>
+        <span><a href="https://caiwuu.github.io/posts/45bb21ba.html"> https://caiwuu.github.io/posts/45bb21ba.html </a></span>
+      </p>
+        
+    </section>
+    
+    <section class="post-tags">
+      <div>
+        <span>Tag(s):</span>
+        <span class="tag">
+          
+        </span>
+      </div>
+      <div>
+        <a href="javascript:window.history.back();">back</a>
+        <span>· </span>
+        <a href="/">home</a>
+      </div>
+    </section>
+    <section class="post-nav" style="height: 72px">
+      
+      <a class="prev" rel="next" href="/posts/f059c6b.html"> RSA加密算法解析 </a>
+       
+      <a class="next" rel="prev" href="/posts/4563e85b.html"> 新一代富文本编辑器设计（二） </a>
+      
+    </section>
+    <div id="vcomments"></div>
+    <!-- id 将作为查询条件 -->
+    <script>
+      const viewer = new Viewer(document.getElementById('artcle-container'), {
+        inline: false,
+        // viewed() {
+        //   // viewer.zoomTo(0.8)
+        // },
+      })
+      new Valine({
+        el: '#vcomments',
+        appId: 'WMcVmY3mpwsbkLkKENagoOts-gzGzoHsz',
+        appKey: 'eE10SdKfvwoU6o1FKHRS3JuF',
+        meta: ['nick'],
+        avatar: 'robohash',
+        visitor: true, // 阅读量统计
+        recordIP: true,
+      })
+    </script>
+  </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+  <div class="copyright">
+    <span>© Cai Wu | 2020</span>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>

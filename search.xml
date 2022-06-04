@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>GitHub Actions</title>
+    <url>/posts/4a17b156.html</url>
+    <content><![CDATA[<p>GitHub Actions是github推出的<strong>持续集成服务</strong>，它比 <a href="https://www.ruanyifeng.com/blog/2017/12/travis_ci_tutorial.html">Travis CI</a>更加强大方便；在 GitHub Actions 的仓库中自动化、自定义和执行软件开发工作流程。您可以发现、创建和共享操作以执行您喜欢的任何作业（包括 CI/CD，并将操作合并到完全自定义的工作流程中。本文将通过一个hexo博客自动发布的例子来了解GitHub Actions。</p>
+<h2 id="GitHub-Actions-基础入门"><a href="#GitHub-Actions-基础入门" class="headerlink" title="GitHub Actions 基础入门"></a>GitHub Actions 基础入门</h2><p>众所周知，自动化集成包括很多动作，如代码拉取，环境安装，数据库安装配置，打包，代码测试等等,这些操作就被定义为action。很多操作在不同项目中都是一样的，比如从github拉取代码，node环境安装等等，所以这些操作是可以共享的，这一点GitHub Actions设计者也想到了，所以我们是可以将一些公共的操作单独写发布在github仓库中供别人使用的。github官方也提供了一个<a href="https://github.com/marketplace?type=actions">action市场</a>，在我们写我们自己的集成流程时，可以通过<strong>userName/repoName</strong>引用他人写好的actions来简化我们的action编写。</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211015153039085.png" alt="image-20211015153039085"></p>
+<h3 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li>workflow（工作流程）：一次集成的过程称为一个工作流程。</li>
+<li>jos（任务）：一个workflow由多个job组成。</li>
+<li>step（步骤）：一个job包含多个步骤。</li>
+<li>action（动作）：每个 step 可以依次执行一个或多个命令（action）。</li>
+</ul>
+<h3 id="配置文件介绍"><a href="#配置文件介绍" class="headerlink" title="配置文件介绍"></a>配置文件介绍</h3><blockquote>
+<p>GitHub Actions 的配置文件叫做 workflow 文件，存放在代码仓库的<code>.github/workflows</code>目录，是一个 <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html">YAML 格式</a>文件，一个workflow 文件由以上四个部分组成。</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># name：工作流名称，不填 GitHub 将其设置为相对于仓库根目录的工作流程文件路径</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">hexo-ci</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># on：触发流程的事件；必填</span></span><br><span class="line"><span class="comment">## 写法1：使用单一事件</span></span><br><span class="line"><span class="string">on:push</span></span><br><span class="line"><span class="comment">## 写法2：使用事件列表</span></span><br><span class="line"><span class="attr">on:</span> [<span class="string">push</span>, <span class="string">pull_request</span>]</span><br><span class="line"><span class="comment">## 写法3：使用具有活动类型或配置的多个事件</span></span><br><span class="line"><span class="string">on</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [<span class="string">master</span>]</span><br><span class="line">    </span><br><span class="line"><span class="comment"># jobs：任务</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="comment"># job id</span></span><br><span class="line">  <span class="string">job1：</span></span><br><span class="line">  	<span class="string">......</span></span><br><span class="line">  <span class="attr">job2:</span></span><br><span class="line">  	<span class="comment"># job id</span></span><br><span class="line">  	<span class="attr">name:</span> <span class="string">bulid-name</span></span><br><span class="line">  	<span class="comment"># 识别在此作业运行之前必须成功完成的任何作业</span></span><br><span class="line">  	<span class="string">needs:[job1]</span></span><br><span class="line">  	<span class="comment"># 必填。 要运行作业的机器类型</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="comment"># 步骤</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="comment"># 引用他人的actions</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">      <span class="comment"># 步骤名称</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">        <span class="comment"># 有些引用的action需要外部提供的一些参数；通过with传递</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">version:</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">hexo</span></span><br><span class="line">      	 <span class="comment"># step环境变量</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">          <span class="attr">ACTION_DEPLOY_KEY:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.HEXO_DEPLOY_PRI</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="comment"># 执行一些具体的命令（action）</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">~/.ssh/</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">&quot;$ACTION_DEPLOY_KEY&quot;</span> <span class="string">&gt;</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">chmod</span> <span class="number">600</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">ssh-keyscan</span> <span class="string">github.com</span> <span class="string">&gt;&gt;</span> <span class="string">~/.ssh/known_hosts</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">&quot;youremail@.com&quot;</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">&quot;your name&quot;</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">deploy</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">d</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面只是列举了一些常用的字段，GitHub Action 的配置字段非常多，可以通过<a href="https://docs.github.com/cn/actions/learn-github-actions/workflow-syntax-for-github-actions">官方中文文档</a>查阅</p>
+</blockquote>
+<h2 id="下面是一个自动部署hexo的例子"><a href="#下面是一个自动部署hexo的例子" class="headerlink" title="下面是一个自动部署hexo的例子"></a>下面是一个自动部署hexo的例子</h2><h3 id="案例基本需求"><a href="#案例基本需求" class="headerlink" title="案例基本需求"></a>案例基本需求</h3><blockquote>
+<p>有两个仓库git仓库A、B，A存放的是hexo博客的资源文件，即markdown文件，B仓库则是 github page 仓库，存放的是hexo编译之后的文件；通常情况下我们每次写完博客需要进行编译，然后把编译好的文件push到B仓库，同时把资源文件push到A仓库。这样显得比较繁琐，现在我们利用GitHub Actions实现在每次push资源文件到A仓库时，github自动编译资源文件，并且将编译好的文件发布到B仓库。</p>
+</blockquote>
+<h3 id="创建两个仓库"><a href="#创建两个仓库" class="headerlink" title="创建两个仓库"></a>创建两个仓库</h3><ul>
+<li>blog：存放资源文件</li>
+<li>caiwuu.github.io：github page 静态文件仓库</li>
+</ul>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211009000947355.png" alt="image-20211009000947355"></p>
+<h3 id="生成公钥私钥"><a href="#生成公钥私钥" class="headerlink" title="生成公钥私钥"></a>生成公钥私钥</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">ssh-keygen -t rsa -b 4096 -C <span class="string">&quot;<span class="subst">$(git config user.email)</span>&quot;</span> -f github-deploy-key -N <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>此时在当前目录下会生成两个文件github-deploy-key(私钥)和github-deploy-key.pub(公钥)</p>
+<h3 id="给caiwuu-github-io仓库添加公钥"><a href="#给caiwuu-github-io仓库添加公钥" class="headerlink" title="给caiwuu.github.io仓库添加公钥"></a>给caiwuu.github.io仓库添加公钥</h3><p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090050853.png" alt="image-20211009005049817"></p>
+<h3 id="给blog仓库添加secrets’变量HEXO-DEPLOY-PUB"><a href="#给blog仓库添加secrets’变量HEXO-DEPLOY-PUB" class="headerlink" title="给blog仓库添加secrets’变量HEXO_DEPLOY_PUB"></a>给blog仓库添加secrets’变量HEXO_DEPLOY_PUB</h3><blockquote>
+<p>这个变量存的就是私钥，这个变量在Github Action 中可以通过变量名获取</p>
+</blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090054166.png" alt="image-20211009005450131"></p>
+<h3 id="创建action脚本文件"><a href="#创建action脚本文件" class="headerlink" title="创建action脚本文件"></a>创建action脚本文件</h3><blockquote>
+<p>GitHub Actions 的配置文件叫做 workflow 文件，存放在代码仓库的<code>.github/workflows</code>目录，是一个以yml为后缀的文件</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">CI</span></span><br><span class="line"><span class="string">on</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [<span class="string">master</span>]</span><br><span class="line">  <span class="attr">workflow_dispatch:</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">version:</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node_version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">hexo</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">          <span class="attr">ACTION_DEPLOY_KEY:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.HEXO_DEPLOY_PRI</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">~/.ssh/</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">&quot;$ACTION_DEPLOY_KEY&quot;</span> <span class="string">&gt;</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">chmod</span> <span class="number">600</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line">          <span class="string">ssh-keyscan</span> <span class="string">github.com</span> <span class="string">&gt;&gt;</span> <span class="string">~/.ssh/known_hosts</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">&quot;youremail@.com&quot;</span></span><br><span class="line">          <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">&quot;your name&quot;</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">deploy</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">          <span class="string">hexo</span> <span class="string">d</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Hexo-deploy-配置"><a href="#Hexo-deploy-配置" class="headerlink" title="Hexo  deploy 配置"></a>Hexo  deploy 配置</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repository:</span> <span class="string">git@github.com:caiwuu/caiwuu.github.io.git</span> <span class="comment"># 这里一定要用ssh地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>尝试修改一点博客的内容，然后提交，查看CI集成是否成功</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090107800.png" alt="image-20211009010711752"></p>
+<blockquote>
+<p>action执行成功后可以看到编译的静态文件已经成功部署到了github page仓库，代开github page地址博客已经更新</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/202110090109673.png" alt="image-20211009010941631"></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>其他</category>
+      </categories>
+      <tags>
+        <tag>github action</tag>
+        <tag>CI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RSA加密算法解析</title>
+    <url>/posts/f059c6b.html</url>
+    <content><![CDATA[<h2 id="什么是RSA加密算法？"><a href="#什么是RSA加密算法？" class="headerlink" title="什么是RSA加密算法？"></a>什么是RSA加密算法？</h2><p>RSA是1977年由<a href="https://baike.baidu.com/item/%E7%BD%97%E7%BA%B3%E5%BE%B7%C2%B7%E6%9D%8E%E7%BB%B4%E6%96%AF%E7%89%B9/700199">罗纳德·李维斯特</a>（Ron Rivest）、<a href="https://baike.baidu.com/item/%E9%98%BF%E8%BF%AA%C2%B7%E8%90%A8%E8%8E%AB%E5%B0%94">阿迪·萨莫尔</a>（Adi Shamir）和<a href="https://baike.baidu.com/item/%E4%BC%A6%E7%BA%B3%E5%BE%B7%C2%B7%E9%98%BF%E5%BE%B7%E6%9B%BC/12575612">伦纳德·阿德曼</a>（Leonard Adleman）一起提出的。当时他们三人都在<a href="https://baike.baidu.com/item/%E9%BA%BB%E7%9C%81%E7%90%86%E5%B7%A5%E5%AD%A6%E9%99%A2/117999">麻省理工学院</a>工作。RSA就是他们三人姓氏开头字母拼在一起组成的 。非对称加密RSA就是基于RSA算法实现的。所谓非对称加密，是指用于加密和解密的密钥是不相同的。而对称加密则是加密和解密的密钥是相同的，这就导致了密钥传递过程中会存在安全问题；而在非对称加密中用来解密的密钥称为私钥，它是不对外公布的，而用于加密的公钥是对外公布的。</p>
+<img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211015174758976.png" alt="image-20211015174758976" width="100%" height="700px"/>
+
+<p>看到这里你肯定很好奇它到底是怎么样做到加密和解密的呢，它又是怎样保证安全性的呢？</p>
+<p>接下来将一步步揭开RSA加密算法的神秘面纱。</p>
+<h3 id="一点数学知识"><a href="#一点数学知识" class="headerlink" title="一点数学知识"></a>一点数学知识</h3><blockquote>
+<p><strong>质数</strong>:也称素数，除了1和本身，不能被其他数整除的数。如，2，3，5，7，11等等</p>
+</blockquote>
+<blockquote>
+<p><strong>互质关系</strong>:如果两个正整数，除了1以外，没有其他公因子，我们就称这两个数是<a href="https://zh.wikipedia.org/zh-cn/%E4%BA%92%E7%B4%A0">互质关系</a>，如3和5，5和7等等。</p>
+</blockquote>
+<ol>
+<li>任意两个质数构成互质关系，比如3和5。</li>
+<li>一个数是质数，另一个数只要不是前者的倍数，两者就构成互质关系，比如3和7。</li>
+<li>如果两个数之中，较大的那个数是质数，则两者构成互质关系，比如10和37。</li>
+<li>p是大于1的整数，则p和p-1构成互质关系，比如10和9。</li>
+<li>p是大于1的奇数，则p和p-2构成互质关系，比如33和31。</li>
+<li>1和任意一个自然数是都是互质关系，比如1和10。</li>
+</ol>
+<blockquote>
+<p><strong>欧拉函数</strong>：描述任意给定正整数n，在小于等于n的正整数之中，有多少个与n构成互质关系，用 $\phi(n)$表示。</p>
+</blockquote>
+<ol>
+<li>n=1时，$\phi(n)$ = 1</li>
+<li>n是质数，$\phi(n)$ = n-1</li>
+<li>n = $p^k$ (p为质数，k为大于等于1的整数)，$\phi(n)$ = $p^k-p^{k-1}$</li>
+<li>n = $p_1\times p_2$ ($p_1,p_2$ 是质数)，$\phi(n) = \phi(p_1p_2) = \phi(p_1)\phi(p_2) = (p_1 -1 ) \times (p_2 -1) $</li>
+<li>$ n = p_1^{k_1}p_2^{k_2}p_3^{k_3}…p_x^{k_x}$(p是质数，k是整数)，$\phi(n)=n(1-\frac{1}{p_1})(1-\frac{1}{p_2})(1-\frac{1}{p_3})_{…}(1-\frac{1}{p_x})$ </li>
+</ol>
+<blockquote>
+<p><strong>欧拉定理</strong>：如果两个正整数a和n互质，则n的欧拉函数 $\phi(n)$ 可以让下面的等式成立：</p>
+<p>$\alpha^{\phi(n)} \equiv 1 (mod \quad n)$  </p>
+</blockquote>
+<ol>
+<li>特例：如果n是质数，则 $\alpha^{n-1} \equiv 1 (mod \quad n)$;这也称为<strong>费马定理</strong>。</li>
+<li>$(\alpha^{\phi(n)})^h \equiv 1 \quad (mod \quad n)$ ,h是正整数。</li>
+<li>$\alpha^{\phi(n)}\times x \equiv x \quad (mod \quad n) \quad x 是整数$ 。</li>
+</ol>
+<blockquote>
+<p><strong>模反元素</strong>：如果两个正整数a和n互质，那么一定可以找到整数b，使得 ab-1 被n整除，或者说ab被n除的余数是1</p>
+<p>$ab = 1(mod \quad n)$</p>
+<p>这时，b就叫做a的<a href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%8F%8D%E5%85%83%E7%B4%A0">模反元素</a>。</p>
+</blockquote>
+<h3 id="密钥生成"><a href="#密钥生成" class="headerlink" title="密钥生成"></a>密钥生成</h3><ol>
+<li><p>随机取两个质数p,q,这里假如取11和13，真实情况下取得数会比较大，这里方便为了方便计算取得较小。实际应用中这两个数越大越难破解</p>
+<p>$n=pq=143,\phi(n)=10\times12=120$</p>
+</li>
+<li><p>取一个整数e,e满足$1&lt;e&lt;\phi(n)，e和\phi(n)互质$。求e对$\phi(n)$的模反元素d</p>
+<p>ed = 1 (mod $\phi(n)$)  =&gt;  ed = $h\phi(n)+1$ =&gt; ed + $\phi(n)y = 1$</p>
+<p>取e=7带入数据：7d + 120 y = 1</p>
+<p>解的一组解：d = 103,y=-6</p>
+</li>
+<li><p>于是得到了公钥（n,e）,私钥（n,d），实际应用中采用的是ASN.1格式。</p>
+</li>
+<li><p>下面带入一组数据验证一下（数字较大可使用<a href="https://www.calculator.net/big-number-calculator.html">大数计算器</a>）：</p>
+<p>假设要加密的数据m=5;</p>
+<p>用公钥加密：$m^e = c \quad(mod \quad n)$ 带入数据：$5^7 = c \quad mod(143)$ =&gt; c = 47</p>
+<p>用私钥解密：$c^d = m \quad (mod \quad n)$ 带入数据 $47^{103} = m \quad (mod \quad 143)$ =&gt; m = 5</p>
+</li>
+</ol>
+<h3 id="数学证明"><a href="#数学证明" class="headerlink" title="数学证明"></a>数学证明</h3><p>​        证明  $c^d = m \quad (mod \quad n)$，通俗的说就是证明左边除以n的余数是m：</p>
+<p>​        根据加密公式 $m^e = c \quad(mod \quad n)$</p>
+<p>​        $ c=m^e -kn,k为系数$；带入原式：</p>
+<p>​        $(m^e-kn)^d = m \quad (mod \quad n)$</p>
+<p>​        对左边展开：$C_d^0(m^e)^{d}(kn)^{0}+C_d^1(m^e)^{d-1}(kn)^{1}+C_d^2(m^e)^{d-2}(kn)^{2}…C_d^d(m^e)^{d-d}(kn)^{d} =  m \quad (mod \quad n)$ </p>
+<p>​        左边除了第一项都带n，所以左边除n的余数必然等于左边第一项除n的余数所以上式子等价于求证：$m^{ed} = m \quad (mod \quad n)$</p>
+<p>​        $\because ed =h\phi(n)+1 $</p>
+<p>​        $\therefore 上式子又等价于求证 m^{\phi(n)+1} = m \quad(mod \quad n)$</p>
+<ol>
+<li><p>如果m、n互质。</p>
+<p>$m^{\phi(n) }= 1 \quad(mod \quad n)$</p>
+<p>两边同乘m，得 $ m^{\phi(n)+1} = m \quad(mod \quad n)$，证毕。</p>
+</li>
+<li><p>如果m、n不互质。</p>
+<p>$\because n=pq,pq互质，n、m不互质$</p>
+<p>$\therefore m=kp || kq$,k为整数</p>
+<p>假设m=kp,此时m和q必然互质</p>
+<p>$\therefore m^{q-1} =  1\quad(mod\quad q) =&gt;根据欧拉定理第2点特性可得： (m^{q-1})^{h(p-1)} = 1\quad(mod\quad q)=&gt; (m^{q-1})^{h(p-1)} \times m = m\quad(mod\quad q)$</p>
+<p>$\because ed =h\phi(n)+1,\phi(n)=(p-1)(q-1) $</p>
+<p>$\therefore m^{ed} = m \quad (mod \quad q)$</p>
+<p>$\because m=kp$</p>
+<p>$\therefore kp^{ed} = kp \quad (mod \quad q) =&gt; kp^{ed} = zq + kp$</p>
+<p>两边同除p：</p>
+<p>$\frac{kp^{ed}}{p} =\frac{zq}{p}+k$</p>
+<p>$\therefore \frac{kp^{ed}}{p} 是整数，k是整数，所以\frac{zq}{p}也必定是整数，而pq互质，所以z必定是p的整数倍$</p>
+<p>$\therefore z = {z}’p 带入上面式子得： kp^{ed} = {z}’pq+kp$</p>
+<p>$\because kp = m ,pq =n$</p>
+<p>$\therefore m^{ed} = {z}’n + m =&gt;m^{ed} = m \quad(mod \quad n)$，证毕。</p>
+<h3 id="安全性分析"><a href="#安全性分析" class="headerlink" title="安全性分析"></a>安全性分析</h3><p>由上面密钥生成的例子可知，密钥破解的关键就是d，因为n,e都是公开的，$\because ed =h\phi(n)+1 $，要求d就必须知道$\phi(n)$,而$\phi(n) = (p-1)(p-1)$,所以必须对n进行因式分解，n比较小还好，但是实际应用中n的长度一般都是1024二进制位或者2048二进制位，目前人类公布的能破解的最大位数是768二进制位，每增加一位对破解难度都是指数级增加。更何况就算知道了pq，d也只是ed + $\phi(n)$ y = 1 无数组整数解中的一组。所以可知破解难度有多大。就目前人类的科技水平而言，实际应用中1024位是非常安全，2048位是绝对安全。</p>
+</li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
+    <title>Typora图床配置</title>
+    <url>/posts/d633bead.html</url>
+    <content><![CDATA[<h2 id="在typora偏好设置中配置图片上传服务"><a href="#在typora偏好设置中配置图片上传服务" class="headerlink" title="在typora偏好设置中配置图片上传服务"></a>在typora偏好设置中配置图片上传服务</h2><p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007020425624.png" alt="image-20211007020425624"></p>
+<blockquote>
+<p> 如果没下载Picgo则点击下载，选择合适的安装包安装即可</p>
+</blockquote>
+<h2 id="下载Picgo-点击下载"><a href="#下载Picgo-点击下载" class="headerlink" title="下载Picgo  点击下载"></a>下载Picgo  <a href="https://github.com/Molunerfinn/picgo/releases">点击下载</a></h2><p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007021016473.png" alt="image-20211007021016473"></p>
+<h2 id="配置Picgo"><a href="#配置Picgo" class="headerlink" title="配置Picgo"></a>配置Picgo</h2><blockquote>
+<p>这里以gitee作为图片仓库</p>
+</blockquote>
+<h3 id="创建gitee仓库"><a href="#创建gitee仓库" class="headerlink" title="创建gitee仓库"></a>创建gitee仓库</h3><blockquote>
+<p>首先在gitee新建一个<strong>公共的</strong>仓库，例如这里新建了一个名叫pic的仓库</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007023301417.png" alt="image-20211007023301417"></p>
+</blockquote>
+<h3 id="获取token"><a href="#获取token" class="headerlink" title="获取token"></a>获取token</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007023908747.png" alt="image-20211007023908747"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007024041393.png" alt="image-20211007024041393"></p>
+</blockquote>
+<h3 id="下载gitee插件"><a href="#下载gitee插件" class="headerlink" title="下载gitee插件"></a>下载gitee插件</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007024254640.png" alt="image-20211007024254640"></p>
+</blockquote>
+<h3 id="配置gitee插件"><a href="#配置gitee插件" class="headerlink" title="配置gitee插件"></a>配置gitee插件</h3><blockquote>
+<p>在图床设置中设置Gitee图床</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025134178.png" alt="image-20211007025134178"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007024537599.png"></p>
+</blockquote>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><blockquote>
+<p>配置好了即可在上传区上传一张图片看是否成功</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025402851.png" alt="image-20211007025402851"></p>
+</blockquote>
+<h3 id="在typora上面测试是否成功"><a href="#在typora上面测试是否成功" class="headerlink" title="在typora上面测试是否成功"></a>在typora上面测试是否成功</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025708740.png" alt="image-20211007025708740"></p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007025950500.png" alt="image-20211007025950500"></p>
+</blockquote>
+<h3 id="如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间"><a href="#如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间" class="headerlink" title="如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间"></a>如果失败了了则打开日志排查；成功了记得关闭日志避免日志占用空间</h3><blockquote>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20211007030518326.png" alt="image-20211007030518326"></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>配置</category>
+      </categories>
+      <tags>
+        <tag>图床配置</tag>
+        <tag>typora</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>新一代富文本编辑器设计（一）</title>
+    <url>/posts/45bb21ba.html</url>
+    <content><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>富文本编辑器作为前端最具挑战性的项目之一，同时也一直是前端领域的一个深坑；笔者在写这篇文章时已经入坑半年多了，也开发了自己的第一个新一代的富文本编辑器，其中经历了两次小重构，两次大重构（第四次大重构正在进行中）。打开搜索引擎，你会发现关于富文本编辑器真正的实现的文章屈指可数，而其中要么是说些大而笼统的概念，要么就是都是些L0级别的老架构。下面将结合我的开发经验来聊聊关于新一代富文本编辑器的开发。作为开篇，将主要讲解富文本的发展历程和不同架构的优劣。</p>
+<h2 id="发展历程"><a href="#发展历程" class="headerlink" title="发展历程"></a>发展历程</h2><p>富文本发展至今已经经历了<strong>L0</strong>,<strong>L1</strong>,<strong>L2</strong>三个阶段，每上升一个阶段，开发难度都会增加，对浏览器的依赖都在减少，灵活性体验性和一致性都在增强。下面将大致介绍各个阶段的特点（具体的可以百度，这部分内容网上很多，而我将着重介绍L2级别的设计）</p>
+<h3 id="L0-阶段"><a href="#L0-阶段" class="headerlink" title="L0 阶段"></a>L0 阶段</h3><p>该节点主要用到了 <code>contenteditable</code> 和 <code>document.execCommand</code>这两个API,代表的有 Wangeditor ，Ckeditor等·</p>
+<p><strong>优点</strong> 这个级别的优点就是开发简单，难点浏览器都帮你实现了。</p>
+<p><strong>缺点</strong> 当然缺点也是显而易见，高度依赖浏览器，灵活性低，可定制性低，不同浏览器API行为不一致，脏标签问题，<code>document.execCommand</code>即将被废弃；几乎不支持协同</p>
+<h3 id="L1-阶段"><a href="#L1-阶段" class="headerlink" title="L1 阶段"></a>L1 阶段</h3><p>该阶段相对于L0在于它不再依赖 <code>document.execCommand</code>这个API，实现了数据和视图的分离，自己实现了一套操作命令，自由度更高了。如 quill，slate等</p>
+<p><strong>优点</strong> 相对于L0减少了很多浏览器导致的不确定的bug，可支持协同</p>
+<p><strong>缺点</strong> 开发难度相对于L0大大增加，输入上面可能存在一些bug，<code>contenteditable</code>的坑依然存在，<a href="https://www.oschina.net/translate/why-contenteditable-is-terrible?lang=chs&p=1">具体有哪些坑可参考这篇文章</a></p>
+<h3 id="L2-阶段"><a href="#L2-阶段" class="headerlink" title="L2 阶段"></a>L2 阶段</h3><p>该阶段在L1的基础上彻底抛弃了<code>contenteditable</code>,自己实现光标，输入，选区，甚至自己实现一套绘制系统（这种我称之为L2 pro），如WPS网页版本、GoogeDocs</p>
+<p><strong>优点</strong> 该阶段将不再有<code>contenteditable</code>的坑，同时可玩性和定制性大大增强，可以随心所欲的实现各种功能。</p>
+<p><strong>缺点</strong> 开发难度大大增强，特别是光标、输入、选区的处理非常复杂。</p>
+<h4 id="接下来的几章笔者将介绍关于L2级别编辑器的光标，输入，模型等各个模块的设计和难点，最后再整合以上模块来介绍总体的架构。敬请期待"><a href="#接下来的几章笔者将介绍关于L2级别编辑器的光标，输入，模型等各个模块的设计和难点，最后再整合以上模块来介绍总体的架构。敬请期待" class="headerlink" title="接下来的几章笔者将介绍关于L2级别编辑器的光标，输入，模型等各个模块的设计和难点，最后再整合以上模块来介绍总体的架构。敬请期待!"></a>接下来的几章笔者将介绍关于L2级别编辑器的<code>光标</code>，<code>输入</code>，<code>模型</code>等各个模块的设计和难点，最后再整合以上模块来介绍<code>总体的架构</code>。敬请期待!</h4>]]></content>
+  </entry>
+  <entry>
+    <title>新一代富文本编辑器设计（三）</title>
+    <url>/posts/c753095b.html</url>
+    <content><![CDATA[<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>上一章介绍了一种光标的实现思路，这一章介绍富文本编辑的一大核心内容，模型设计。什么是模型（model），模型就是对视图的一种抽象的数据结构，它能够和视图直接的或者间接的形成映射。前面介绍过的L0阶段的编辑器大多数都是没有model的，它们采用的是直接操作dom的方式。直接操作dom的优点是实现简单，但是不方便做标记，不方便diff，一不小心还会造成性能问题。</p>
+<h3 id="一段富文本包含什么信息"><a href="#一段富文本包含什么信息" class="headerlink" title="一段富文本包含什么信息"></a>一段富文本包含什么信息</h3><p>我们从”一段富文本包含什么信息“这个问题来探究模型的设计，通常来说，一段富文本无非就包含了结构信息、样式信息、内容信息，结构信息有如段落结构，通常来描述内容的位置信息；样式信息如字体大小，颜色，加粗，倾斜等，对内容其修饰作用，内容信息即文字图片视频等信息。在我们操作富文本的过程中，也无非就是改变这三种信息。因此数据模型必须能清晰准确的反映这三种信息。</p>
+<h3 id="富文本的两类操作"><a href="#富文本的两类操作" class="headerlink" title="富文本的两类操作"></a>富文本的两类操作</h3><p>上面说了操作富文本的过程中，也无非就是改变这三种信息（变量），但是他们的操作有很大的区别，这里分为两类，一类单变量改变，一般可以直接定位到具体的节点的操作，如输入一个文字，插入一个图片，插入一个段落，这些通过光标位置很容易知道在哪个节点加入了什么内容，因此，这类操作可以直接在<strong>操作浮层</strong>上面操作。所谓操作浮层，就是一个虚拟dom，也是即将介绍的一个数据模型，和vue、react不同的是，这里的vnode上面代理了一些dom操作，这就使我们在改变vnode的同时可以同步真实dom，无需diff。另一类是多变量同时改变的操作，如样式的修改就可能涉及到结构的变化,这类操作则是通过<strong>内容标记模型</strong>来操作。下面将分别具体介绍下vnode结构和内容标记模型：</p>
+<h3 id="虚拟DOM"><a href="#虚拟DOM" class="headerlink" title="虚拟DOM"></a>虚拟DOM</h3><ul>
+<li>VNode 节点基类 <a href="https://github.com/caiwuu/editor-pro/blob/master/src/core/model/vnode.js">具体代码源码</a></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">VNode</span> </span>&#123;</span><br><span class="line">  _type = <span class="literal">null</span> <span class="comment">// 节点类型 有block、inline、text、atomic（原子节点，无子节点）</span></span><br><span class="line">  editable = <span class="literal">null</span> <span class="comment">// 可编辑</span></span><br><span class="line">  key = <span class="literal">null</span> </span><br><span class="line">  ns = <span class="string">&#x27;&#x27;</span> <span class="comment">// 命名空间</span></span><br><span class="line">  attrs = &#123;&#125; <span class="comment">// 属性</span></span><br><span class="line">  position = <span class="string">&#x27;0&#x27;</span> <span class="comment">// 从根路径到该节点的路径index连接成的字符串</span></span><br><span class="line">  path = [] <span class="comment">// 从根路径到该节点的路径</span></span><br><span class="line">  index = <span class="number">0</span> <span class="comment">// 在父级子元素中的索引</span></span><br><span class="line">  parentNode = <span class="literal">null</span> <span class="comment">// 父节点</span></span><br><span class="line">  _isVnode = <span class="literal">true</span></span><br><span class="line">  elm = <span class="literal">null</span> <span class="comment">// 真实dom</span></span><br><span class="line">  isRoot = <span class="literal">true</span> <span class="comment">// 是否根节点</span></span><br><span class="line">  tagName = <span class="literal">null</span> </span><br><span class="line">  _children = [] </span><br><span class="line">  styles = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line">  classes = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">  listeners = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line">  <span class="function"><span class="title">render</span>(<span class="params"></span>)</span>&#123;&#125; <span class="comment">// 创建dom</span></span><br><span class="line"> <span class="comment">// 操作代理方法</span></span><br><span class="line">  <span class="function"><span class="title">insert</span>(<span class="params"></span>)</span>&#123;&#125; <span class="comment">// 插入</span></span><br><span class="line">  <span class="function"><span class="title">delete</span>(<span class="params"></span>)</span>&#123;&#125; <span class="comment">// 删除</span></span><br><span class="line">  <span class="function"><span class="title">moveTo</span>(<span class="params"></span>)</span>&#123;&#125; <span class="comment">// 移入</span></span><br><span class="line">  ....</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>elementVNode 元素类节点，继承于VNode</li>
+<li>textVNode 文本类节点 ，继承于VNode</li>
+</ul>
+<blockquote>
+<p>vnode是一个和dom结构一一对应的树状结构，这种结构很容易描述一些单一信息改变的操作，如在某个位置插入一个字符，我们可以可以描述为在position为xxx的，偏移量offset为xx的位置上插入字符xx。因此形象的将这种结构叫做操作浮层。但是，对于大量的节点更新，很难分析具体的操作位点，这时候将通过diff算法去更新。<a href="https://github.com/caiwuu/editor-pro/blob/master/src/core/model/patch.js">具体实现可看源码</a></p>
+</blockquote>
+<p>虽然树状结构能很直观的描述三类信息，同时也和dom结构一致，更合乎我们的思维方式，但是，当我们给内容加样式时，可能涉及到样式信息和结构信息同时改变，这种操作如果在树形结构的vnode中去分析变换不仅要考虑树层级变化，还要考虑各种嵌套问题，回溯问题，这样一来问题的复杂度极其复杂。如下面的一段内容：</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20220330095610967.png" alt="image-20220330095610967"></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;editor-paragraph&quot;</span>&gt;</span></span><br><span class="line">    普通文本1普通文本2</span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot;color: red;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">strong</span>&gt;</span>加粗文本<span class="tag">&lt;/<span class="name">strong</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">em</span>&gt;</span>斜体文本<span class="tag">&lt;/<span class="name">em</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    普通文本4</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果将”普通文本2“变红加粗，一开始可能我们会将代码变成下面这样</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;editor-paragraph&quot;</span>&gt;</span></span><br><span class="line">    普通文本1</span><br><span class="line">     <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot;color: red;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">strong</span>&gt;</span>普通文本2<span class="tag">&lt;/<span class="name">strong</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot;color: red;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">strong</span>&gt;</span>加粗文本<span class="tag">&lt;/<span class="name">strong</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">em</span>&gt;</span>斜体文本<span class="tag">&lt;/<span class="name">em</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    普通文本4</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是，这样的结构明显不是最优的结构，简单的观察可以发现它和下一个strong标签可以合并，变成下面这样</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;editor-paragraph&quot;</span>&gt;</span></span><br><span class="line">    普通文本1</span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot;color: red;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">strong</span>&gt;</span>普通文本2加粗文本<span class="tag">&lt;/<span class="name">strong</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">em</span>&gt;</span>斜体文本<span class="tag">&lt;/<span class="name">em</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    普通文本4</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这种才是最优的结构，我们在代码层面上来分解下处理过程：</p>
+<ul>
+<li><p>分割文本节点 <code>&lt;text&gt;普通文本1普通文本2&lt;/text&gt;</code>为<code>&lt;text&gt;普通文本1&lt;/text&gt;</code> <code>&lt;text&gt;普通文本2&lt;/text&gt;</code></p>
+</li>
+<li><p>检测下一个兄弟节点是不是红色，有没有strong节点，没有则创建一个，再把<code>&lt;text&gt;普通文本2&lt;/text&gt;</code>移动到strong节点里面；有则直接把把<code>&lt;text&gt;普通文本2&lt;/text&gt;</code>移动到strong节点里面</p>
+</li>
+</ul>
+<p>上面举例的只是一种简单的情况，但是在富文本剪辑器中，用户的操作是不可预测的， 稍微改变下操作我们的逻辑就有可能要发生改变，如变红加粗普通文本4，这时是不是还要回过头去检测前一个节点，这样就使遍历过程需要回溯，如果结构很复杂，处理过程将会变得非常繁琐，因为我们很难保证我们的逻辑覆盖了用户所有的操作可能性。因此，要解决这个问题，我们就需要改变思考方式了，显然这种基于现有结构的变换操作是不现实的，我们需要一种能<strong>消除回溯</strong>的方法。既然 基于现有结构的变换行不通，那就干脆重新生成。于是引入了一种扁平化的结构，它能很很好的描述内容的内容和样式。我把这种结构成为 <strong>内容标记结构</strong></p>
+<h3 id="内容标记模型"><a href="#内容标记模型" class="headerlink" title="内容标记模型"></a>内容标记模型</h3><p>内容标记能把一个block下面的内容扁平化的描述为一个数组，每个数组里面是一个对象，这个对象结构如下</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    content:<span class="string">&#x27;&#x27;</span>, <span class="comment">// 内容</span></span><br><span class="line">    mark:&#123;&#125;, <span class="comment">// 样式标记</span></span><br><span class="line">    selected:Bollean, <span class="comment">// 是否被选中</span></span><br><span class="line">    start:Bollean， <span class="comment">// 是否为选区开始位点</span></span><br><span class="line">    start:Bollean， <span class="comment">// 是否为选区结束位点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用内容标记模型重新描述上面的那段内容</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;<span class="attr">content</span>:<span class="string">&quot;普通文本1&quot;</span>, <span class="attr">mark</span>:&#123;&#125;,- selected:<span class="literal">false</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">content</span>:<span class="string">&quot;普通文本2&quot;</span>, <span class="attr">mark</span>:&#123;&#125;,<span class="attr">selected</span>:<span class="literal">true</span>, <span class="attr">start</span>:<span class="literal">true</span>, <span class="attr">end</span>:<span class="literal">true</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">content</span>:<span class="string">&quot;加粗文本&quot;</span>, <span class="attr">mark</span>:&#123;<span class="attr">B</span>:<span class="literal">true</span>,<span class="attr">$FC</span>:<span class="string">&quot;red&quot;</span>&#125;, <span class="attr">selected</span>:<span class="literal">false</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">content</span>:<span class="string">&quot;斜体文本&quot;</span>, <span class="attr">mark</span>:&#123;<span class="attr">I</span>:<span class="literal">true</span>,<span class="attr">$FC</span>:<span class="string">&quot;red&quot;</span>&#125;, <span class="attr">selected</span>:<span class="literal">false</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">content</span>:<span class="string">&quot;普通文本4&quot;</span>, <span class="attr">mark</span>:&#123;&#125;, <span class="attr">selected</span>:<span class="literal">false</span>&#125;]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>要将”普通文本2“变红加粗，只需给<code>selected:true</code>的标记的mark设置为<code>mark:&#123;B:true,$FC:&quot;red&quot;&#125;</code>就可以了</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">transfer(blockVnode, range)</span><br><span class="line">    .toMarks(<span class="function">(<span class="params">marks</span>) =&gt;</span> &#123;</span><br><span class="line">      marks.forEach(<span class="function">(<span class="params">ele</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (ele.selected) &#123;</span><br><span class="line">            <span class="comment">// B 代表 bold $FC 代表 font-color</span></span><br><span class="line">          ele.mark[<span class="string">&#x27;B&#x27;</span>] = <span class="literal">true</span></span><br><span class="line">          ele.mark[<span class="string">&#x27;$FC&#x27;</span>] = <span class="string">&#x27;red&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">    .toVNode(<span class="function">(<span class="params">chs</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> clonedVnode = blockVnode.clone()</span><br><span class="line">      clonedVnode.children = chs</span><br><span class="line">      patch(clonedVnode, blockVnode)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>transfer</code> 的<code>toMarks</code>方法能把一段vnode的内容转化为marks,我们可以在回调中对marks进行修改，再通过<code>toVNode</code>方法转化为新的vnode，通过patch方法去更新dom，这样就完美的实现了样式的修改。而vnode和marks的相互转化则由内容标记算法实现.</p>
+</blockquote>
+<h3 id="内容标记算法"><a href="#内容标记算法" class="headerlink" title="内容标记算法"></a>内容标记算法</h3><blockquote>
+<p>内容标记算法主要分为两部分，<strong>标记阶段</strong>和<strong>生成阶段</strong>。下面大致讲解下思路和部分代码，<a href="https://github.com/caiwuu/editor-pro/blob/master/src/core/model/transfer.js">完整代码可看源码</a></p>
+</blockquote>
+<h4 id="1-标记阶段"><a href="#1-标记阶段" class="headerlink" title="1.标记阶段"></a>1.标记阶段</h4><p>标记阶段代码非常简单，就是直接遍历整颗vnode树，并且记录每一层的样式信息，最后标记到叶子节点即text节点上面；同时标记选区的位置和选中状态</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getContentMark</span>(<span class="params">vnode, range, inherit = &#123;&#125;, idx = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> marker = idx === <span class="number">0</span> ? &#123;&#125; : mark(vnode, inherit)</span><br><span class="line">  <span class="comment">// static节点不会有标记重组的过程，diff过程也大大节约性能</span></span><br><span class="line">  <span class="keyword">if</span> (vnode.editable === <span class="string">&#x27;off&#x27;</span> || (vnode.type === <span class="string">&#x27;block&#x27;</span> &amp;&amp; idx)) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      content: vnode,</span><br><span class="line">      <span class="keyword">static</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (vnode.children.length) &#123;</span><br><span class="line">    <span class="keyword">return</span> vnode.children.map(<span class="function">(<span class="params">i</span>) =&gt;</span> getContentMark(i, range, marker, ++idx)).flat()</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (vnode.tagName === <span class="string">&#x27;text&#x27;</span>) &#123;</span><br><span class="line">     <span class="keyword">if</span> (vnode === range.startVNode &amp;&amp; range.startVNode === range.endVNode) &#123;</span><br><span class="line">      <span class="keyword">const</span> res = []</span><br><span class="line">      vnode.context.slice(<span class="number">0</span>, range.startOffset) &amp;&amp;</span><br><span class="line">        res.push(&#123;</span><br><span class="line">          content: vnode.context.slice(<span class="number">0</span>, range.startOffset),</span><br><span class="line">          mark: &#123; ...marker &#125;,</span><br><span class="line">          selected: <span class="literal">false</span>,</span><br><span class="line">        &#125;)</span><br><span class="line">      res.push(&#123;</span><br><span class="line">        content: vnode.context.slice(range.startOffset, range.endOffset),</span><br><span class="line">        mark: &#123; ...marker &#125;,</span><br><span class="line">        selected: <span class="literal">true</span>,</span><br><span class="line">        start: <span class="literal">true</span>,</span><br><span class="line">        end: <span class="literal">true</span>,</span><br><span class="line">      &#125;)</span><br><span class="line">      vnode.context.slice(range.endOffset) &amp;&amp;</span><br><span class="line">        res.push(&#123;</span><br><span class="line">          content: vnode.context.slice(range.endOffset),</span><br><span class="line">          mark: &#123; ...marker &#125;,</span><br><span class="line">          selected: <span class="literal">false</span>,</span><br><span class="line">        &#125;)</span><br><span class="line">      <span class="keyword">return</span> res</span><br><span class="line">    &#125;</span><br><span class="line">         <span class="comment">// 为了方便展示省略若干代码 ...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// mark</span></span><br><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">mark</span>(<span class="params">vnode, inherit = &#123;&#125;</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!vnode.children.length) <span class="keyword">return</span> &#123; ...inherit &#125;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    B: vnode.tagName === <span class="string">&#x27;strong&#x27;</span> || inherit.B,</span><br><span class="line">    I: vnode.tagName === <span class="string">&#x27;em&#x27;</span> || inherit.I,</span><br><span class="line">    U: vnode.tagName === <span class="string">&#x27;u&#x27;</span> || inherit.U,</span><br><span class="line">    D: vnode.tagName === <span class="string">&#x27;del&#x27;</span> || inherit.D,</span><br><span class="line">    $FC: vnode.styles.get(<span class="string">&#x27;color&#x27;</span>) || inherit.$FC,</span><br><span class="line">    $BG: vnode.styles.get(<span class="string">&#x27;background&#x27;</span>) || inherit.$BG,</span><br><span class="line">    $FZ: vnode.styles.get(<span class="string">&#x27;font-size&#x27;</span>) || vnode.styles.get(<span class="string">&#x27;fontSize&#x27;</span>) || inherit.$FZ,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-生成阶段"><a href="#2-生成阶段" class="headerlink" title="2.生成阶段"></a>2.生成阶段</h4><p>生成阶段稍微比较复杂，其中的代码可能不是很好理解。这里通过图示来理解大致的思路。</p>
+<ol>
+<li>分类，找出具有相同属性的最长子串：</li>
+</ol>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20220330153226082.png" alt="image-20220330153226082"></p>
+<ol start="2">
+<li>生成：根据分类得到group数据</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// group:</span></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        keys:[<span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;I&#x27;</span>, <span class="string">&#x27;U&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="string">&#x27;$FC&#x27;</span>, <span class="string">&#x27;$BG&#x27;</span>, <span class="string">&#x27;$FZ&#x27;</span>],<span class="comment">// 用于下一步的keys</span></span><br><span class="line">        marks：[...], <span class="comment">// 即该分类下的内容标记</span></span><br><span class="line">        tags:[], <span class="comment">// 属于分类的名称，keys中的一个或者多个,无则表示为无样式的文本</span></span><br><span class="line">    &#125;，</span><br><span class="line">    &#123;</span><br><span class="line">        keys:[<span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;I&#x27;</span>, <span class="string">&#x27;U&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="string">&#x27;$BG&#x27;</span>, <span class="string">&#x27;$FZ&#x27;</span>],<span class="comment">// 用于下一步的keys</span></span><br><span class="line">        marks：[...], <span class="comment">// 即该分类下的内容标记</span></span><br><span class="line">        tags:[<span class="string">&#x27;$FC&#x27;</span>], <span class="comment">// 属于分类的名称，keys中的一个或者多个,无则表示为无样式的文本</span></span><br><span class="line">    &#125;，</span><br><span class="line">    &#123;</span><br><span class="line">        keys:[<span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;I&#x27;</span>, <span class="string">&#x27;U&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="string">&#x27;$BG&#x27;</span>],<span class="comment">// 用于下一步的keys</span></span><br><span class="line">        marks：[...], <span class="comment">// 即该分类下的内容标记</span></span><br><span class="line">        tags:[<span class="string">&#x27;$FZ&#x27;</span>], <span class="comment">// 属于分类的名称，keys中的一个或者多个,无则表示为无样式的文本</span></span><br><span class="line">    &#125;，</span><br><span class="line">     &#123;</span><br><span class="line">        keys:[<span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;I&#x27;</span>, <span class="string">&#x27;U&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="string">&#x27;$BG&#x27;</span>],<span class="comment">// 用于下一步的keys</span></span><br><span class="line">        marks：[...], <span class="comment">// 即该分类下的内容标记</span></span><br><span class="line">        tags:[], <span class="comment">// 属于分类的名称，keys中的一个或者多个,无则表示为无样式的文本</span></span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>对每个group中marks长度大于1的也执行相同的操作，直到不能再分为止：</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20220330153404299.png" alt="image-20220330153404299"></p>
+<ol start="3">
+<li>生成json（vnode的json表示形式）</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        tagName：<span class="string">&#x27;text&#x27;</span>,</span><br><span class="line">        attrs:&#123;&#125;,</span><br><span class="line">        children:<span class="string">&#x27;text&#x27;</span></span><br><span class="line">    &#125;，</span><br><span class="line">    &#123;</span><br><span class="line">        tagName：<span class="string">&#x27;span&#x27;</span>,</span><br><span class="line">        attrs:&#123;</span><br><span class="line">        	style:<span class="string">&#x27;color:red&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        children:[</span><br><span class="line">        	...</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">    ....</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>但是源码中并不是全部分类完才去生成json的，而是边生成边分类解析的一个递归的过程</p>
+</blockquote>
+<p>4.最后生成vnode</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">json2VNode</span>(<span class="params">list, range</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> list.map(<span class="function">(<span class="params">ele</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> res = createElement(</span><br><span class="line">      ele.tagName,</span><br><span class="line">      &#123; ...ele.attrs &#125;,</span><br><span class="line">      <span class="keyword">typeof</span> ele.children === <span class="string">&#x27;string&#x27;</span> ? ele.children : json2VNode(ele.children, range)</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> (ele.startOffset !== <span class="literal">undefined</span>) range.setStart(res, ele.startOffset)</span><br><span class="line">    <span class="keyword">if</span> (ele.endOffset !== <span class="literal">undefined</span>) range.setEnd(res, ele.endOffset)</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>由此可见，通过这套算法生成的节点是最优的，能达到标签去脏的目的，能避免标签的无限嵌套。</p>
+</blockquote>
+<p>最后用一幅图来总结下本节内容：</p>
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20220330160457011.png" alt="image-20220330160457011"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>新一代富文本编辑器设计（二）</title>
+    <url>/posts/4563e85b.html</url>
+    <content><![CDATA[<h2 id="光标"><a href="#光标" class="headerlink" title="光标"></a>光标</h2><p>上一章介绍富文本的发展历程，章主要介绍L2架构中光标的实现；首先我们知道，由于L2级别已经完全抛弃了<code>contenteditable</code>，意味着需要我们自己实现一个类似的功能，即我们点击一个div的内容，要出现光标和可编辑。可编辑之后再讲，现在我们将见解光标的实现思路。</p>
+<h3 id="位置"><a href="#位置" class="headerlink" title="位置"></a>位置</h3><p>查阅W3C规范我们发现其实浏览器并没有一个现成的API来获取光标的具体坐标；但是可以获取click事件的坐标，能不能用该坐标来确定光标具体的位置呢，理论上是可以的，但是这种方法十分麻烦，因为光标必须和字对齐，而不能在字的上面下面或者中间，这就需要一套就近吸附算法，即计算出点击出作为所有的可插入位点，计算点击坐标离谁最近。还有没有更简单的方法呢，有，虽然我们不依赖浏览器的选区，但是我们可以借助它来计算点击偏移量。</p>
+<h3 id="偏移量"><a href="#偏移量" class="headerlink" title="偏移量"></a>偏移量</h3><p>什么是偏移量呢，所谓偏移量，就是浏览器对光标位置的一种描述，即range。虽然我们没有给dom加上contenteditable属性，但是当我们点击页面的时候，可以获取到range。通过这个range我们可以获取到的信息是哪个dom，偏移了几个文字或者节点，对于 selection 和  range 不熟悉的可参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Range">MDN</a></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取selection对象</span></span><br><span class="line"><span class="keyword">const</span> selection = <span class="built_in">document</span>.getSelection()</span><br><span class="line"><span class="comment">// 获取range数量，注意chrome只支持单选区，火狐可支持多个</span></span><br><span class="line"><span class="keyword">const</span> rangeCount = selection.rangeCount</span><br><span class="line"><span class="comment">// 获取range，只要点击了页面就能获取到range，位点击或者页面失焦则 rangeCount 为 0</span></span><br><span class="line"><span class="keyword">let</span> range</span><br><span class="line"><span class="keyword">if</span>(rangeCount&gt;<span class="number">0</span>)&#123;</span><br><span class="line">  range  = selection.getRangeAt(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fastly.jsdelivr.net/gh/caiwuu/image/image-20220323165306273.png" alt="image-20220323165306273"></p>
+<p>由上图可知一个range包含了这些信息，当我们选中一段内容时,<code>starContainer</code>和<code>startOffset</code>描述了左边界所在的dom和偏移量，<strong>注意，如果starContainer是文本节点，那这个偏移量就是偏移几个文字；如果是元素节点，则表示偏移几个子节点</strong>，同理，<code>endContainer</code>和<code>endOffset </code>描述了右边界所在的dom和偏移量。当只是点击而不是选中内容时，此时的<code>starContainer</code>和<code>endContainer</code>,<code>startOffset</code>和<code>endOffset</code>相等</p>
+<h3 id="坐标计算"><a href="#坐标计算" class="headerlink" title="坐标计算"></a>坐标计算</h3><p>通过上面的介绍，我们已经知道了如何获取点击焦点的偏移量，但是我们如果要自绘光标，这肯定是不够的，我们还需要知道它的准确xy坐标。相信聪明的你已经想到了，空标签，我们可以在需要计算位置的地方插入一个空标签，拿到空标签坐标之后再删除</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> dom = <span class="built_in">document</span>.createElement(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> temp = endContainer.splitText(endOffset)</span><br><span class="line">endContainer.parentNode.insertBefore(dom, temp)</span><br><span class="line"><span class="keyword">const</span> &#123;<span class="attr">offsetLeft</span>: x, <span class="attr">offsetTop</span>: y, offsetHeight&#125; = dom</span><br><span class="line">dom.remove()</span><br><span class="line">endContainer.data = endContainer.data + temp.data</span><br><span class="line">temp.remove()</span><br></pre></td></tr></table></figure>
+
+<h3 id="光标绘制"><a href="#光标绘制" class="headerlink" title="光标绘制"></a>光标绘制</h3><p>现在，我们已经拿到了准确的坐标信息了，接下来就可以自己绘制一个光标了，如绘制一个绝对定位的span标签，然后设置一个css闪烁的动画即可，绘制光标比较基础具体代码就不写了，css动画代码如下：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.custom-caret</span> &#123;</span><br><span class="line">    <span class="attribute">top</span>: -<span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">pointer-events</span>: none;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">2px</span>;</span><br><span class="line">    <span class="attribute">border</span>: none;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">display</span>: block;</span><br><span class="line">    <span class="attribute">animation</span>: caret <span class="number">1s</span> infinite <span class="number">0.5s</span> <span class="built_in">steps</span>(<span class="number">1</span>, start);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@keyframes</span> caret &#123;</span><br><span class="line">    <span class="number">0%</span> &#123;</span><br><span class="line">        <span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="number">50%</span> &#123;</span><br><span class="line">        <span class="attribute">opacity</span>: <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="number">100%</span> &#123;</span><br><span class="line">        <span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+</search>
