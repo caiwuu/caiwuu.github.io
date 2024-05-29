@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as s}from"./chunks/framework.CmqN_Wm4.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"posts/index.md","filePath":"posts/index.md","lastUpdated":1716947465000}'),a={name:"posts/index.md"};function o(n,r,d,c,p,i){return s(),t("div")}const f=e(a,[["render",o]]);export{m as __pageData,f as default};
