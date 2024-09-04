@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as s}from"./chunks/framework.uoWebbS1.js";const l=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"posts/index.md","filePath":"blog/posts/index.md","lastUpdated":1716951622000}'),a={name:"posts/index.md"};function o(n,r,d,c,p,i){return s(),t("div")}const m=e(a,[["render",o]]);export{l as __pageData,m as default};
